@@ -1,0 +1,40 @@
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+  ecr-repos:
+    description: "Repositories (as defined in gooddata/terraform-ecr/repositories) (newline delimited)"
+    required: true
+  ecr-url:
+    default: "020413372491.dkr.ecr.us-east-1.amazonaws.com"
+    description: "ECR registry default URL (without prefix/suffix)"
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - run: goodbye.sh
+      shell: bash
+    - name: Expand tags with ECR url and ECR repo
+      id: expand_tags
+      env:
+        ECR_URL: ${{ inputs.ecr-url }}
+        ECR_REPOS: ${{ inputs.ecr-repos }}
+      shell: bash
+      run: |
+        for ER in $ECR_REPOS; do
+          echo "Current repo $ECR_URL/$ECR_REPOS:$ER"
+        done; 
+
