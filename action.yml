@@ -1,0 +1,57 @@
+name: 'Hello World'
+description: 'Greet someone'
+inputs:
+  who-to-greet:  # id of input
+    description: 'Who to greet'
+    required: true
+    default: 'World'
+  ecr-repos:
+    description: "Repositories (as defined in gooddata/terraform-ecr/repositories) (newline delimited)"
+    required: true
+  ecr-urls:
+    description: "Urls (newline delimited)"
+    required: true
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - run: goodbye.sh
+      shell: bash
+    - name: Expand tags with ECR url and ECR repo
+      id: expand_tags
+      env:
+        ECR_URLS: ${{ inputs.ecr-urls }}
+        ECR_REPOS: ${{ inputs.ecr-repos }}
+      shell: bash
+      run: |
+#        for i in 1 2 3; do
+#          echo "Outer Loop: $i"
+#          for j in A B C; do
+#            echo "  Inner Loop: $j"
+#          done
+#        done
+#        for ER in $ECR_REPOS; do
+#          for EU in $ECR_URLS; do
+#            echo "Current repo $EU:$ER"
+#          done
+#        done
+        for ER in $ECR_REPOS; do
+          echo "Current er $ER"
+        done
+        for EU in $ECR_URLS; do
+          echo "Current eu $EU"
+        done
+#        for ER in $ECR_REPOS; do
+#          echo "Current repo $ECR_URL:$ER"
+#        done;
+
