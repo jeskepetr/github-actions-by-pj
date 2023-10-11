@@ -34,24 +34,15 @@ runs:
         ECR_REPOS: ${{ inputs.ecr-repos }}
       shell: bash
       run: |
-#        for i in 1 2 3; do
-#          echo "Outer Loop: $i"
-#          for j in A B C; do
-#            echo "  Inner Loop: $j"
-#          done
-#        done
-#        for ER in $ECR_REPOS; do
-#          for EU in $ECR_URLS; do
-#            echo "Current repo $EU:$ER"
-#          done
-#        done
         for ER in $ECR_REPOS; do
           echo "Current er $ER"
         done
         for EU in $ECR_URLS; do
           echo "Current eu $EU"
         done
-#        for ER in $ECR_REPOS; do
-#          echo "Current repo $ECR_URL:$ER"
-#        done;
+        for ER in $ECR_REPOS; do
+          for EU in $ECR_URLS; do
+            echo "Current repo $EU:$ER"
+          done
+        done
 
