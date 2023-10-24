@@ -1,0 +1,21 @@
+name: 'Print message action'
+description: 'Simple action to demonstrate github actions'
+inputs:
+  message:
+    description: 'Message to print'
+    required: false
+    default: "One Ring to rule them all, One Ring to find them, One Ring to bring them all and in the darkness bind them."
+outputs:
+  random-number:
+    description: 'Random number'
+    value: ${{ steps.random-number-generator.outputs.random-number}}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Print message
+      run: echo ${{ inputs.message }}
+      shell: bash
+    - id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
